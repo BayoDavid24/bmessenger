@@ -30,7 +30,7 @@ app.get("/health", (req, res) => {
 
 // if the public directory exists, serve the static files
 //this is for production build
-if (fs.exxistsSync(publicDir)) {
+if (fs.existsSync(publicDir)) {
 
     app.use(express.static(publicDir));
 
