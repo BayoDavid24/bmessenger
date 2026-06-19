@@ -1,4 +1,3 @@
-//const express = require('express');
 import express from 'express';
 import cors from 'cors';
 
@@ -6,8 +5,9 @@ import "dotenv/config";
 
 import fs from 'fs';
 import path from 'path';
- 
-import clerk from '@clerk/express';
+
+
+import { clerkMiddleware } from '@clerk/express';
 
 import User from './models/user.model.js';
 import { connectDB } from './lib/db.js';
@@ -20,7 +20,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 const publicDir = path.join(process.cwd(), 'public');
 
 app.use(express.json());
-app.use(cors(origin=FRONTEND_URL, credentials=true));
+app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(clerkMiddleware());
 
 
@@ -32,10 +32,10 @@ app.get("/health", (req, res) => {
 //this is for production build
 if (fs.existsSync(publicDir)) {
 
-    app.use(express.static(publicDir));
+    app.use(express.static(publicDir))
 
     app.get("/{*any}", (req, res, next) => {
-        res,sendFile(path.join(publicDir, 'index.html'), (err) => next(err));
+        res.sendFile(path.join(publicDir, 'index.html'), (err) => next(err));
     } );
 }
 
