@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import cron from 'cron';
+import job from './lib/cron.js';
 
 import "dotenv/config";
 
@@ -45,6 +45,7 @@ app.listen(PORT, () => {
     connectDB();
     console.log('Server is running on port', PORT);
 
-    if(process.env.NODE_ENV === 'production') job.
-    start();
+    if (process.env.NODE_ENV === 'production') {
+    job.start();
+}
 }); 
