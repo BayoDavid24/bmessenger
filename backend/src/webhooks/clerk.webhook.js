@@ -28,15 +28,16 @@ router.post("/", async (req, res) => {
 
         const email =
         u.email_addresses?.find((e) => e.id === u.primary_email_address_id)?.email_address ??
-        u.email_address?.[0]?.email_address;
-        "Clear User"
+        u.email_addresses?.[0]?.email_address;
+
         
         const fullName =
-        [u.full_name, u.last_name].filter(Boolean).join(" ") || u.username || email?.split("@")[0];
+        [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username || email?.split("@")
+        [0];
         
-        await User.findOneAndUpdate({clerkId:u.id},
-            {clerkId:u.id},
-            { clerkId: u.id, email, fillName, profilePic: u.image_url },
+        await User.findOneAndUpdate(
+            { clerkId: u.id },
+            { clerkId: u.id, email, fullName, profilePic: u.image_url },
             { new: true, upsert: true, setDefaultsOnInsert: true },
         );
 
@@ -50,7 +51,7 @@ router.post("/", async (req, res) => {
 
     } catch (error) {
         console.error ("Error in Clerk webhook:", error);
-        res,status(400).json({ message: "Webhook verification failed" });
+        res.status(400).json({ message: "Webhook verification failed" });
 
     }
 });
