@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
         u.email_address?.[0]?.email_address;
         "Clear User"
         
-        const email =
+        const fullName =
         [u.full_name, u.last_name].filter(Boolean).join(" ") || u.username || email?.split("@")[0];
         
         await User.findOneAndUpdate({clerkId:u.id},
@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
     } catch (error) {
         console.error ("Error in Clerk webhook:", error);
         res,status(400).json({ message: "Webhook verification failed" });
-        
+
     }
 });
 
