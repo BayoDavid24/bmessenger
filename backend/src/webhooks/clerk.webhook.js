@@ -9,6 +9,7 @@ router.post("/", async (req, res) => {
     try {
         const signingSecret = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
     if (!signingSecret) {
+        console.log("Missing signing secret");
         res.status(500).json({ error: "Webhook signing secret is not provided" });
         return;
     }
@@ -28,6 +29,8 @@ router.post("/", async (req, res) => {
     if (evt.type === "user.created" || evt.type === "user.updated"){
         const u = evt.data;
 
+        console.log("Clerk user id:", u.id);
+
         const email =
         u.email_addresses?.find((e) => e.id === u.primary_email_address_id)?.email_address ??
         u.email_addresses?.[0]?.email_address;
@@ -36,16 +39,25 @@ router.post("/", async (req, res) => {
         const fullName =
         [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username || email?.split("@")
         [0];
+
+        console.log({
+                email,
+                fullName,
+                image: u.image_url,
+            });
         
-        await User.findOneAndUpdate( 
+        const user = await User.findOneAndUpdate( 
             { clerkId: u.id },
             { clerkId: u.id, email, fullName, profilePic: u.image_url },
-            { new: true, upsert: true, setDefaultsOnInsert: true },
+            { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true }
         );
+          console.log("MongoDB user saved:", user);
     }
 
     if(evt.type === "user.deleted"){
+        console.log("Deleting user:", evt.data.id);
         if(evt.data.id) await User.findOneAndDelete({ clerkId: evt.data.id });
+         console.log("User deleted");
     }
 
     res.status(200).json({ received: true});
