@@ -6,6 +6,7 @@ import { Routes, Route, Navigate } from 'react-router';
 import ChatPage from './pages/ChatPage';
 import AuthPage from './pages/AuthPage';
 import { useAuth } from '@clerk/react';
+import PageLoader from './components/PageLoader';
 
 
 
@@ -15,7 +16,7 @@ function App() {
   const {isSignedIn, isLoaded} = useAuth();
 
   //TODO: Make this a better loading component, maybe a spinner or something
-  if (!isLoaded) return <div>Loading...</div>
+  if (!isLoaded) return <PageLoader />; 
 
   return (
     <ThemeProvider>
